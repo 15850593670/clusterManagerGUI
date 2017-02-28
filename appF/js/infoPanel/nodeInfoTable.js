@@ -8,7 +8,7 @@ export default class NodeInfoTable extends React.Component {
 
         this.state = {
             connected: false,
-            nodeList: null
+            nodeList: []
         }
         em.on('connectionEstablished', function () {
 
@@ -17,7 +17,7 @@ export default class NodeInfoTable extends React.Component {
         }.bind(this))
     }
     componentDidMount() {
-        if(connS.connected == true){
+        if (connS.connected == true) {
             this.refresh()
         }
 
@@ -50,7 +50,9 @@ export default class NodeInfoTable extends React.Component {
                     }
                     console.log(dataT)
                     console.log(dataX)
-                    that.setState({ nodeList: dataX, connected: true })
+                    // if (that.refs.nodeList) {
+                        that.setState({ nodeList: dataX, connected: true })
+                    // }
                 }).on('data', function (data) {
                     dataT += data
                 }).stderr.on('data', function (data) {

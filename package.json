@@ -1,5 +1,5 @@
 {
-  "name": "jsfiddle_hx",
+  "name": "cluster_manager_hx",
   "version": "1.0.0",
   "description": "A minimal Electron application",
   "main": "main.js",

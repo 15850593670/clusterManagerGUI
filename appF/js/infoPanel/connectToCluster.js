@@ -8,10 +8,10 @@ export default class ConnectToCluster extends React.Component {
         super(props)
 
         this.state = {
-            clusterIP: '',
+            clusterIP: null,
             cluserPort: null,
-            username: '',
-            password: ''
+            username: null,
+            password: null
         }
     }
     handleClusterIPChange(e) {
@@ -35,10 +35,24 @@ export default class ConnectToCluster extends React.Component {
         let sp = data.split('\n')
         console.log(sp)
     }
+    //fuction used in development
+    testConnect() {
+        if (this.state.clusterIP == null && this.state.cluserPort == null && this.state.username == null && this.state.password == null) {
+            this.state.clusterIP = "127.0.0.1"
+            this.state.username = "david"
+            this.state.password = "123456"
+        }
+    }
     connectClick() {
         var that = this
         console.log(this.state)
         let conn = new Client()
+        //
+        if (this.state.clusterIP == null && this.state.cluserPort == null && this.state.username == null && this.state.password == null) {
+            this.state.clusterIP = "127.0.0.1"
+            this.state.username = "david"
+            this.state.password = "123456"
+        }
         conn.on('ready', function () {
             console.log('Client :: ready');
             conn.shell(function (err, stream) {
@@ -47,9 +61,6 @@ export default class ConnectToCluster extends React.Component {
                     console.log('Stream :: close');
                     conn.end()
                     // connS.sleep(2000)
-                    // connS.connSettings.host = '127.0.0.1'
-                    // connS.connSettings.username = 'david'
-                    // connS.connSettings.password = '123456'
                     connS.connSettings.host = that.state.clusterIP
                     connS.connSettings.port = that.state.clusterPort
                     connS.connSettings.username = that.state.username
@@ -76,9 +87,6 @@ export default class ConnectToCluster extends React.Component {
             port: this.state.port,
             username: this.state.username,
             password: this.state.password
-            // host: '127.0.0.1',
-            // username: 'david',
-            // password: '123456'
         });
 
     }
