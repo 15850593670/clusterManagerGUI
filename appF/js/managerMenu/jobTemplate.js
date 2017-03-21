@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-export default class jobButton extends React.Component {
+export default class jobTemplate extends React.Component {
     constructor(props) {
         super(props)
 
@@ -11,7 +11,7 @@ export default class jobButton extends React.Component {
         }
 
         em.on('activechange', (v) => {
-            if (v != 2) {
+            if (v != 3) {
                 this.setState({ active: 'false' })
             }
         })
@@ -21,12 +21,12 @@ export default class jobButton extends React.Component {
         //$("li").removeClass("active");
 
         this.setState({ active: 'active' });
-        em.emit('activechange', 2)
-        em.emit('infoChange', 2)
+        em.emit('activechange', 3)
+        em.emit('infoChange', 3)
     }
     render() {
         return (
-            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">Job List</a></li>
+            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">Job Template</a></li>
         )
     }
 }

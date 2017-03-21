@@ -59,6 +59,10 @@
   padding-right: 20px;
   padding-left: 20px;
 }
+.nav-sidebar > li > p {
+  padding-right: 10px;
+  padding-left: 10px;
+}
 .nav-sidebar > .active > a,
 .nav-sidebar > .active > a:hover,
 .nav-sidebar > .active > a:focus {

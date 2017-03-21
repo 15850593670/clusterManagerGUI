@@ -3,7 +3,7 @@
 import React from 'react'
 var {dialog} = require('electron').remote // Load remote compnent that contains the dialog dependency
 //var dialog = remote.require('dialog') // Load the dialogs component of the OS
-var fs = require('fs');
+var fs = require('fs')
 
 export default class NewJob extends React.Component {
     constructor(props) {

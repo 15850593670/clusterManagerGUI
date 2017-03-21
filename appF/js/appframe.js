@@ -17,7 +17,7 @@ export default class Appframe extends React.Component {
         return (
 
             <div className="container-fluid" >
-                <div className="row">
+                <div className="row" style={{ "height": "100%"}}>
                     <ManagerMenu />
                     <InfoPanel />
                 </div>

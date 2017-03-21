@@ -2,8 +2,6 @@
 
 import React from 'react'
 
-//import './less/clusterButton.less'
-
 export default class clusterButton extends React.Component {
     constructor(props) {
         super(props)
@@ -27,7 +25,7 @@ export default class clusterButton extends React.Component {
     }
     render() {
         return (
-            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">Cluster Manager</a></li>
+            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">Cluster Status</a></li>
         )
     }
 }
