@@ -52,7 +52,7 @@ export default class codePanel extends React.Component {
         em.emit('exitCodeEdit')
     }
 
-    subJob(f){
+    subJob(f) {
         this.props.subjob(f)
     }
 
@@ -90,6 +90,16 @@ export default class codePanel extends React.Component {
         var fileList = Conf.readJobs()
         var thisfile = [[this.state.filename, this.state.fullname, new Date().toDateString()]]
         var conc = thisfile
+        console.log(fileList)
+        for (var i = 0; i < fileList.length; i++) {
+            console.log(thisfile[0][1] + ' f ' + fileList[i][1] + '  ' + i)
+            if (thisfile[0][0] == fileList[i][0] && thisfile[0][1] == fileList[i][1]) {
+                fileList.splice(i, 1)
+                i--
+            }
+        }
+        console.log(fileList)
+
         if (fileList != null) {
             conc = thisfile.concat(fileList)
         }
@@ -107,8 +117,8 @@ export default class codePanel extends React.Component {
                     <span className="glyphicon glyphicon-save" aria-hidden="true"></span>
                 </button>
                 <button type="button" className="btn btn-default navbar-right" aria-label="Left Align" onClick={
-                    function(){that.subJob.bind(that)({filename:that.state.filename,fullname:that.state.fullname})}
-                    }>
+                    function () { that.subJob.bind(that)({ filename: that.state.filename, fullname: that.state.fullname }) }
+                }>
                     <span className="glyphicon glyphicon-upload" aria-hidden="true"></span>
                 </button>
                 <br />

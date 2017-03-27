@@ -4,7 +4,7 @@ import React from 'react'
 import CodePanel from './codePanel'
 import './less/jobInfoPanel.less'
 import RecentJob from './recentJob'
-
+var fs = require('fs')
 
 export default class jobTemPanel extends React.Component {
     constructor(props) {
@@ -12,7 +12,8 @@ export default class jobTemPanel extends React.Component {
 
         this.state = {
             code: false,
-            file: null
+            file: null,
+            jobfile: null
         }
 
     }
@@ -47,6 +48,7 @@ export default class jobTemPanel extends React.Component {
                 var readStream = fs.createReadStream(f.fullname)
                 var wstr = f.filename + '_' + Date.now().toString()
                 var writeStream = sftp.createWriteStream(wstr)
+                that.state.jobfile = wstr
 
                 writeStream.on('close', function () {
                     console.log("- file transferred succesfully");
@@ -80,7 +82,7 @@ export default class jobTemPanel extends React.Component {
                 }).stderr.on('data', function (data) {
                     console.log('STDERR: ' + data);
                 });
-                stream.end('qsub ' + f.filename + '\nexit\n');
+                stream.end('qsub ' + that.state.jobfile + '\nexit\n');
             });
         }).connect(connS.connSettings);
     }

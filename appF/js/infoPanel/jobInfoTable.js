@@ -73,8 +73,12 @@ export default class JobInfoTable extends React.Component {
             });
         }).connect(connS.connSettings);
     }
+    jobDetail(id){
+         em.emit('displayJobDetail', id)
+    }
 
     render() {
+        var that = this
         if (this.state.connected == false) {
             return (
                 <div>
@@ -102,12 +106,12 @@ export default class JobInfoTable extends React.Component {
                         <td key={j}>{attr.trim().substring(0, 10)}</td>
                     )
                 }
-                return (
+                return ( 
                     <td key={j}>{attr.trim()}</td>
                 )
             })
             return (
-                <tr key={i}>{oneNode}</tr>
+                <tr key={i} onClick={function(){that.jobDetail.bind(this)(node[0].substring(0,node[0].indexOf('.')))}}>{oneNode}</tr>
             )
         })
         return(
