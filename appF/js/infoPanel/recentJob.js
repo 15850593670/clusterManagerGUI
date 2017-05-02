@@ -3,6 +3,7 @@
 import React from 'react'
 
 import Conf from '../common/conf'
+import './less/recentjob.less'
 
 export default class recentJob extends React.Component {
     constructor(props) {
@@ -26,6 +27,12 @@ export default class recentJob extends React.Component {
         this.props.openfile(f)
     }
 
+    deletefile(i){
+        this.state.filelist.splice(i, 1)
+        this.setState({filelist: this.state.filelist})
+        Conf.saveJobs(this.state.filelist)
+    }
+
     render() {
         var that = this
         var filess = this.state.filelist.map((f, i) => {
@@ -40,7 +47,13 @@ export default class recentJob extends React.Component {
                 )
             })
             return (
-                <tr key={i} >{oneF}</tr>
+                <tr key={i} className='tdbutton'>{oneF}
+                    <td>
+                        <button type="button" className="btn btn-default btn-xs btnds" aria-label="Left Align" onClick={function(){that.deletefile.bind(that)(i)}}>
+                            <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                </tr>
             )
         })
         return(

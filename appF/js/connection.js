@@ -6,7 +6,8 @@ let connSettings = {
     host: '',
     port: null,
     username: '',
-    password: ''
+    password: '',
+    batchtype: 0
 }
 let connected = false
 function sleep(ms) {

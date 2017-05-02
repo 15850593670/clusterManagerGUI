@@ -4,6 +4,8 @@ import React from 'react'
 import CodePanel from './codePanel'
 import './less/jobInfoPanel.less'
 import RecentJob from './recentJob'
+import Openfile from './openfile'
+import NewTemJob from './newTemJob'
 var fs = require('fs')
 
 export default class jobTemPanel extends React.Component {
@@ -32,6 +34,9 @@ export default class jobTemPanel extends React.Component {
         this.setState({ code: true })
         console.log('new job')
     }
+    newTemJob(){
+
+    }
 
     openthefile(f) {
         this.state.file = f
@@ -46,7 +51,7 @@ export default class jobTemPanel extends React.Component {
                 if (err) throw err;
 
                 var readStream = fs.createReadStream(f.fullname)
-                var wstr = f.filename + '_' + Date.now().toString()
+                var wstr = f.filename //+ '_' + Date.now().toString()
                 var writeStream = sftp.createWriteStream(wstr)
                 that.state.jobfile = wstr
 
@@ -98,8 +103,14 @@ export default class jobTemPanel extends React.Component {
         return (
 
             <div id='jobInfoPanel' className='container'>
-                <button type="button" className="btn btn-default" aria-label="Left Align" onClick={this.newJob.bind(this)}>
+                <button type="button" className="btn btn-default" aria-label="Left Align" data-toggle='modal' data-target='#openfile-modal'>
                     <span className="glyphicon glyphicon-file" aria-hidden="true"></span>
+                </button>
+                <button type="button" className="btn btn-default" aria-label="Left Align" onClick={this.newJob.bind(this)}>
+                    <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                </button>
+                <button type="button" className="btn btn-default" aria-label="Left Align" data-toggle='modal' data-target='#newtemjob-modal'>
+                    <span className="glyphicon glyphicon-th-large" aria-hidden="true"></span>
                 </button>
 
                 <br />
@@ -108,6 +119,8 @@ export default class jobTemPanel extends React.Component {
                     Recent Jobs
                 </h1>
                 <RecentJob openfile={this.openthefile.bind(this)} />
+                <Openfile openIt={this.openthefile.bind(this)} />
+                <NewTemJob openfile={this.openthefile.bind(this)}/>
 
             </div>
         )

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import CodeMirror from 'codemirror'
+import Submitfiles from './submitfiles'
 var fs = require('fs')
 import '../../../node_modules/codemirror/lib/codemirror.css'
 import './less/code.less'
@@ -31,8 +32,13 @@ export default class codePanel extends React.Component {
             mode: 'host'
         })
         this.codemirror.setSize('100%', '100%')
+        
 
-        if (this.props.file != null) {
+        if (this.props.file != null && this.props.file.length == 1) {
+            this.state.code = this.props.file[0]
+            this.codemirror.getDoc().setValue(this.state.code)
+            this.setState({ fresh: this.state.fresh + 1 })
+        }else if(this.props.file != null){
             this.state.filename = this.props.file[0]
             this.state.fullname = this.props.file[1]
             if (fs.existsSync(this.props.file[1])) {
@@ -49,11 +55,13 @@ export default class codePanel extends React.Component {
     }
 
     exitCodeEdit() {
+        this.savefile()
         em.emit('exitCodeEdit')
     }
 
-    subJob(f) {
-        this.props.subjob(f)
+    subJob() {
+        this.savefile()
+        this.props.subjob({ filename: this.state.filename, fullname: this.state.fullname })
     }
 
     savefile() {
@@ -86,24 +94,28 @@ export default class codePanel extends React.Component {
         }
     }
 
-    saveIntoRecent() {
-        var fileList = Conf.readJobs()
-        var thisfile = [[this.state.filename, this.state.fullname, new Date().toDateString()]]
-        var conc = thisfile
-        console.log(fileList)
-        for (var i = 0; i < fileList.length; i++) {
-            console.log(thisfile[0][1] + ' f ' + fileList[i][1] + '  ' + i)
-            if (thisfile[0][0] == fileList[i][0] && thisfile[0][1] == fileList[i][1]) {
-                fileList.splice(i, 1)
-                i--
-            }
-        }
-        console.log(fileList)
+    // saveIntoRecent() {
+    //     var fileList = Conf.readJobs()
+    //     var thisfile = [[this.state.filename, this.state.fullname, new Date().toDateString()]]
+    //     var conc = thisfile
+    //     console.log(fileList)
+    //     for (var i = 0; i < fileList.length; i++) {
+    //         console.log(thisfile[0][1] + ' f ' + fileList[i][1] + '  ' + i)
+    //         if (thisfile[0][0] == fileList[i][0] && thisfile[0][1] == fileList[i][1]) {
+    //             fileList.splice(i, 1)
+    //             i--
+    //         }
+    //     }
+    //     console.log(fileList)
 
-        if (fileList != null) {
-            conc = thisfile.concat(fileList)
-        }
-        Conf.saveJobs(conc)
+    //     if (fileList != null) {
+    //         conc = thisfile.concat(fileList)
+    //     }
+    //     Conf.saveJobs(conc)
+    // }
+    saveIntoRecent() {
+        var thisfile = [[this.state.filename, this.state.fullname, new Date().toDateString()]]
+        Conf.saveIntoRecent(thisfile)
     }
 
     render() {
@@ -116,8 +128,11 @@ export default class codePanel extends React.Component {
                 <button type="button" className="btn btn-default navbar-right" aria-label="Left Align" onClick={this.savefile.bind(this)}>
                     <span className="glyphicon glyphicon-save" aria-hidden="true"></span>
                 </button>
+                <button type="button" className="btn btn-default navbar-right" aria-label="Left Align" data-toggle='modal' data-target='#submitfiles-modal'>
+                    <span className="glyphicon glyphicon-cloud-upload" aria-hidden="true"></span>
+                </button>
                 <button type="button" className="btn btn-default navbar-right" aria-label="Left Align" onClick={
-                    function () { that.subJob.bind(that)({ filename: that.state.filename, fullname: that.state.fullname }) }
+                      that.subJob.bind(that) 
                 }>
                     <span className="glyphicon glyphicon-upload" aria-hidden="true"></span>
                 </button>
@@ -132,6 +147,7 @@ export default class codePanel extends React.Component {
                         defaultValue={this.state.code}
                     />
                 </div>
+                <Submitfiles />
 
             </div>
         )

@@ -28,6 +28,21 @@ function readJobs() {
         return null
     }
 }
+function saveIntoRecent(job) {
+        var fileList = readJobs()
+        for (var i = 0; i < fileList.length; i++) {
+            if (job[0][0] == fileList[i][0] && job[0][1] == fileList[i][1]) {
+                fileList.splice(i, 1)
+                i--
+            }
+        }
+
+        var conc = null
+        if (fileList != null) {
+            conc = job.concat(fileList)
+        }
+        saveJobs(conc)
+    }
 
 function getUserHome() {
     return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -35,5 +50,6 @@ function getUserHome() {
 
 module.exports = {
     saveJobs: saveJobs,
-    readJobs: readJobs
+    readJobs: readJobs,
+    saveIntoRecent: saveIntoRecent
 }
