@@ -94,25 +94,6 @@ export default class codePanel extends React.Component {
         }
     }
 
-    // saveIntoRecent() {
-    //     var fileList = Conf.readJobs()
-    //     var thisfile = [[this.state.filename, this.state.fullname, new Date().toDateString()]]
-    //     var conc = thisfile
-    //     console.log(fileList)
-    //     for (var i = 0; i < fileList.length; i++) {
-    //         console.log(thisfile[0][1] + ' f ' + fileList[i][1] + '  ' + i)
-    //         if (thisfile[0][0] == fileList[i][0] && thisfile[0][1] == fileList[i][1]) {
-    //             fileList.splice(i, 1)
-    //             i--
-    //         }
-    //     }
-    //     console.log(fileList)
-
-    //     if (fileList != null) {
-    //         conc = thisfile.concat(fileList)
-    //     }
-    //     Conf.saveJobs(conc)
-    // }
     saveIntoRecent() {
         var thisfile = [[this.state.filename, this.state.fullname, new Date().toDateString()]]
         Conf.saveIntoRecent(thisfile)

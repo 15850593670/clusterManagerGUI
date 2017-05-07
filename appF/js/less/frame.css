@@ -11,6 +11,9 @@
 /*
  * Global add-ons
  */
+ .entry-footer .excerpt p {
+   word-wrap: break-word;
+}
 
 .sub-header {
   padding-bottom: 10px;

@@ -9,10 +9,7 @@ import ManagerMenu from './managerMenu/managerMenu'
 import './less/frame.css'
 
 export default class Appframe extends React.Component {
-    /*<div className='Appframe'>
-                <ManagerMenu />
-                <InfoPanel />
-            </div>*/
+
     render() {
         return (
 

@@ -28,19 +28,19 @@ export default class infoPanel extends React.Component {
     render() {
         if (this.state.p == 1) {
             return (
-                <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main infoPanel">
                     <ClusterInfo id='clusterInfo' />
                 </div>
             )
         } else if (this.state.p == 2) {
             return (
-                <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main infoPanel">
                     <JobInfo id='jobInfo' />
                 </div>
             )
         }else{
             return (
-                <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" >
+                <div className="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main infoPanel" >
                     <JobTemPanel />
                 </div>
             )

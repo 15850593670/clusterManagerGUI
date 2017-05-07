@@ -10,8 +10,6 @@ import JobTemplate from './jobTemplate'
 
 export default class ManagerMenu extends React.Component {
 
-// <li className="active"><a href="#">Cluster Manager</a></li>
-//                     <li><a href="#">Job Manager</a></li>
     render() {
         return (
 

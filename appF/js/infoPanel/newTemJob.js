@@ -171,8 +171,8 @@ export default class newTemJob extends React.Component {
                             </table>
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-default" onClick={this.cancelClick.bind(this)}>cancel</button>
-                            <button className="btn btn-primary" onClick={this.jobOK.bind(this)}>submit</button>
+                            <button className="btn btn-default" onClick={this.cancelClick.bind(this)}>Cancel</button>
+                            <button className="btn btn-primary" onClick={this.jobOK.bind(this)}>Done</button>
                         </div>
                     </div>
                 </div>

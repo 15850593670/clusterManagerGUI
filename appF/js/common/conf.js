@@ -25,7 +25,7 @@ function readJobs() {
         //     a = false
         // })
     } else {
-        return null
+        return []
     }
 }
 function saveIntoRecent(job) {

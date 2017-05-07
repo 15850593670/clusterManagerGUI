@@ -37,11 +37,6 @@ export default class recentJob extends React.Component {
         var that = this
         var filess = this.state.filelist.map((f, i) => {
             let oneF = f.map((attr, j) => {
-                // if (attr.trim().length > 10) {
-                //     return (
-                //         <td key={j}>{attr.trim().substring(0, 10)}</td>
-                //     )
-                // }
                 return (
                     <td key={j}  onClick={function(){that.editfile.bind(that)(f)}}>{attr.trim()}</td>
                 )

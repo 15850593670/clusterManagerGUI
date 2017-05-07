@@ -34,22 +34,27 @@ export default class NodeInfoTable extends React.Component {
                     console.log(dataT);
                     conn.end();
 
-                    dataT = dataT.split("$ pbsnodes")
-                    dataT = dataT[1].split("\n\r\n")
+                    dataT = dataT.split("$ pbsnodes\r\n")
+                    dataT = dataT[1].split("\r\n\r\n")
+                    // console.log(dataT)
                     let dataX = []
                     for (let j = 0; j < dataT.length - 1; j++) {
                         let temp = dataT[j]
-                        temp = temp.split('\n')
-                        console.log(temp)
+                        temp = temp.split('\r\n')
+                        // console.log(temp)
                         let dataY = []
-                        dataY.push(["Node Name"].concat(temp[1]))
-                        for (var i = 2; i < temp.length; i++) {
+                        dataY.push(["Node Name"].concat(temp[0]))
+                        for (var i = 1; i < temp.length; i++) {
                             dataY.push(temp[i].split(" = "))
+                        }
+                        if(dataY[1][1].trim() != 'free' && dataY.length == 7){
+                            dataY.splice(5, 0, ["status", "--"])
+                            console.log('insert')
                         }
                         dataX.push(dataY)
                     }
-                    console.log(dataT)
-                    console.log(dataX)
+                    // console.log(dataT)
+                    // console.log(dataX)
                     // if (that.refs.nodeList) {
                         that.setState({ nodeList: dataX, connected: true })
                     // }
@@ -81,7 +86,7 @@ export default class NodeInfoTable extends React.Component {
             let oneNode = node.map((attr, j) => {
                 if (attr[1].trim().length > 10) {
                     return (
-                        <td key={j}>{attr[1].trim().substring(0, 10)}</td>
+                        <td key={j} data-toggle="tooltip" data-placement="top" title={attr[1].trim()}>{attr[1].trim().substring(0, 10)}</td>
                     )
                 }
                 return (
