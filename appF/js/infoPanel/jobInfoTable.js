@@ -26,81 +26,57 @@ export default class JobInfoTable extends React.Component {
     }
     refresh() {
         var that = this
-        let dataT = ''
-        let code = ''
-        let conn = new Client()
-        conn.on('ready', function () {
-            console.log('Client :: ready');
-            conn.shell(function (err, stream) {
-                if (err) throw err;
-                stream.on('close', function () {
-                    console.log(dataT);
-                    conn.end();
-                    for (var i = 0; i < dataT.length; i++) {
-                        code += dataT.charCodeAt(i) + ' '
-                    }
-                    // console.log(code)
-                    // console.log(dataT)
+        ++comNum
+        em.emit('newCommand', 'qstat')
+        em.once('reply' + (comNum - 1), (data) => {
+            console.log(data)
+            let dataT = '2345666' + data
+            dataT = dataT.split("666qstat")
+            dataT = dataT[1].split("\r\n")
 
-                    dataT = dataT.split("$ qstat")
-                    dataT = dataT[1].split("\r\n")
-                    if (dataT.length < 3) {
-                        return
-                    }
-                    let dataX = []
-                    let dataTitle = []
-                    let dataJob = []
-                    dataX = dataT[1].split(/ +(?!(ID|Use))/)
-                    for (var i = 0; i < dataX.length; i += 2) {
-                        dataTitle.push(dataX[i])
-                        if (dataX[i].trim() == "Queue") {
-                            that.state.queuePos = i / 2
-                        }
-                        if (dataX[i].trim() == 'S') {
-                            that.state.statusPos = i / 2
-                        }
-                    }
+            if (dataT.length < 3) {
+                return
+            }
+            let dataTitle = []
+            let dataJob = []
+            let dataX = dataT[1].split(/ +(?!(ID|Use))/)
+            for (var i = 0; i < dataX.length; i += 2) {
+                dataTitle.push(dataX[i])
+                if (dataX[i].trim() == "Queue") {
+                    that.state.queuePos = i / 2
+                }
+                if (dataX[i].trim() == 'S') {
+                    that.state.statusPos = i / 2
+                }
+            }
 
-
-                    for (let j = 3; j < dataT.length - 3; j++) {
-                        let temp = dataT[j]
-                        let dataY = []
-                        temp = temp.split(/ +/)
-                        console.log(temp)
-                        for (var k = 0; k < temp.length - 1; k++) {
-                            dataY.push(temp[k])
-                        }
-                        dataJob.push(dataY)
-                        // console.log(that.state.queuePos+' '+ dataY[that.state.queuePos])
-                        if (that.state.queueList.indexOf(dataY[that.state.queuePos]) == -1) {
-                            that.state.queueList.push(dataY[that.state.queuePos])
-                        } else if (that.state.statusList.indexOf(dataY[that.state.statusPos]) == -1) {
-                            that.state.statusList.push(dataY[that.state.statusPos])
-                        }
-
-                    }
-                    // console.log(that.state.queueList)
-                    // console.log(dataT)
-                    // console.log(dataTitle)
-                    // console.log(dataJob)
-                    that.setState({ titleList: dataTitle, connected: true, jobList: dataJob })
-                }).on('data', function (data) {
-                    dataT += data
-                }).stderr.on('data', function (data) {
-                    console.log('STDERR: ' + data);
-                });
-                stream.end('qstat\nexit\n');
-            });
-        }).connect(connS.connSettings);
+            for (let j = 3; j < dataT.length - 1; j++) {
+                let temp = dataT[j]
+                let dataY = []
+                temp = temp.split(/ +/)
+                console.log(temp)
+                for (var k = 0; k < temp.length - 1; k++) {
+                    dataY.push(temp[k])
+                }
+                dataJob.push(dataY)
+                // console.log(that.state.queuePos+' '+ dataY[that.state.queuePos])
+                if (that.state.queueList.indexOf(dataY[that.state.queuePos]) == -1) {
+                    that.state.queueList.push(dataY[that.state.queuePos])
+                } else if (that.state.statusList.indexOf(dataY[that.state.statusPos]) == -1) {
+                    that.state.statusList.push(dataY[that.state.statusPos])
+                }
+            }
+            that.setState({ titleList: dataTitle, connected: true, jobList: dataJob })
+        })
     }
     jobDetail(id) {
         em.emit('displayJobDetail', id)
     }
-    filter2show(lei, name){
-        if(lei == 'Queue'){
-            this.setState({ queue2show : name})
+    filter2show(lei, name) {
+        if (lei == 'Queue') {
+            this.setState({ queue2show: name })
         } else {
-            this.setState({ status2show : name})
+            this.setState({ status2show: name })
         }
     }
 
@@ -152,7 +128,7 @@ export default class JobInfoTable extends React.Component {
         })
         var JobValue = this.state.jobList.map((node, i) => {
             if ((that.state.queue2show != 'all' && node[that.state.queuePos] != that.state.queue2show)
-            || (that.state.status2show != 'all' && node[that.state.statusPos] != that.state.status2show)){
+                || (that.state.status2show != 'all' && node[that.state.statusPos] != that.state.status2show)) {
                 return (<tr key={i}></tr>)
             }
             let oneNode = node.map((attr, j) => {

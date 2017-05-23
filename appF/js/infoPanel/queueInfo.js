@@ -29,57 +29,42 @@ export default class queueInfo extends React.Component {
     }
     refresh() {
         var that = this
-        let dataT = ''
-        let conn = new Client()
-        conn.on('ready', function () {
-            conn.shell(function (err, stream) {
-                if (err) throw err;
-                stream.on('close', function () {
-                    console.log(dataT);
-                    conn.end();
-
-                    dataT = dataT.split("$ qstat -q\r\n\r\n")
-                    dataT = dataT[1].split("\r\n")
-                    var index = []
-                    for (var i = 0; i < dataT[3].length; i++) {
-                        if (dataT[3][i] == ' ') {
-                            index.push(i)
-                            if (dataT[3][i + 1] == ' ') {
-                                i++
-                            }
-                        }
+        ++comNum
+        em.emit('newCommand', 'qstat -q')
+        em.once('reply' + (comNum - 1), (data) => {
+            // console.log(data)
+            let dataT = data.split("stat -q\r\n\r\n")
+            dataT = dataT[1].split("\r\n")
+            var index = []
+            for (var i = 0; i < dataT[3].length; i++) {
+                if (dataT[3][i] == ' ') {
+                    index.push(i)
+                    if (dataT[3][i + 1] == ' ') {
+                        i++
                     }
-                    // console.log(index)
-                    let dataX = []
-                    var abc = [2]
-                    // console.log(dataT)
-                    for(var i = 4; i < dataT.length - 5;i++){
-                        abc.push(i)
-                    }
-                    abc.push(dataT.length - 4)
-                    for (var k = 0;k < abc.length; k++) {
-                        console.log(dataT[abc[k]] , abc[k])
-                        var temp = []
-                        var pred = 0
-                        for (var j = 0;j < index.length;j++) {
-                            temp.push(dataT[abc[k]].substring(pred, index[j]+1))
-                            pred = index[j]+1
-                        }
-                        temp.push(dataT[abc[k]].substring(pred))
-                        dataX.push(temp)
-                    }
-                    dataX[dataX.length - 1][6] = dataX[dataX.length - 1][7]
-                    dataX[dataX.length - 1][7] = '--'
-                    // console.log(dataX)
-                    that.setState({ queueList: dataX, connected: true, server: dataT[0] })
-                }).on('data', function (data) {
-                    dataT += data
-                }).stderr.on('data', function (data) {
-                    console.log('STDERR: ' + data);
-                });
-                stream.end('qstat -q\nexit\n');
-            });
-        }).connect(connS.connSettings);
+                }
+            }
+            let dataX = []
+            var abc = [2]
+            for (var i = 4; i < dataT.length - 3; i++) {
+                abc.push(i)
+            }
+            abc.push(dataT.length - 2)
+            for (var k = 0; k < abc.length; k++) {
+                console.log(dataT[abc[k]], abc[k])
+                var temp = []
+                var pred = 0
+                for (var j = 0; j < index.length; j++) {
+                    temp.push(dataT[abc[k]].substring(pred, index[j] + 1))
+                    pred = index[j] + 1
+                }
+                temp.push(dataT[abc[k]].substring(pred))
+                dataX.push(temp)
+            }
+            dataX[dataX.length - 1][6] = dataX[dataX.length - 1][7]
+            dataX[dataX.length - 1][7] = '--'
+            that.setState({ queueList: dataX, connected: true, server: dataT[0] })
+        })
     }
 
 

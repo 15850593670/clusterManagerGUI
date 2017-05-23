@@ -23,31 +23,14 @@ export default class JobDetail extends React.Component {
 
     getJobStatus() {
         var that = this
-        let dataT = ''
-        let jobname = ''
-        let conn = new Client()
-        conn.on('ready', function () {
-            console.log('Client :: ready');
-            conn.shell(function (err, stream) {
-                if (err) throw err;
-                stream.on('close', function () {
-                    // console.log(dataT);
-                    conn.end();
-
-                    dataT = dataT.split("$ qstat -f " + that.state.jobID)[1]
-                    let dataR = dataT.split("\r\n")
-                    jobname = dataR[2].split(" = ")[1]
-                    // console.log(dataT)
-                    // console.log(jobname)
-                    that.setState({ jobstatus: dataT, jobname: jobname })
-                }).on('data', function (data) {
-                    dataT += data
-                }).stderr.on('data', function (data) {
-                    console.log('STDERR: ' + data);
-                });
-                stream.end('qstat -f ' + that.state.jobID + '\nexit\n');
-            });
-        }).connect(connS.connSettings);
+        ++comNum
+        em.emit('newCommand', 'qstat -f ' + that.state.jobID)
+        em.once('reply' + (comNum - 1), (data) => {
+            let dataT = data.split("stat -f " + that.state.jobID)[1]
+            let dataR = dataT.split("\r\n")
+            let jobname = dataR[2].split(" = ")[1]
+            that.setState({ jobstatus: dataT, jobname: jobname })
+        })
     }
     getOutput() {
         var that = this

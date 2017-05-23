@@ -66,8 +66,9 @@ export default class ConnectToCluster extends React.Component {
                     connS.connSettings.username = that.state.username
                     connS.connSettings.password = that.state.password
                     connS.connected = true
-                    em.emit('connectionEstablished')
-                    console.log('emit 1')
+                    
+                    em.emit('startConnection')
+                    // console.log('emit 1')
                     $('#login-modal').modal('hide')
                     $('#connFailInfo').hide()
                 }).on('data', function (data) {

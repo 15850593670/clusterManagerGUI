@@ -26,7 +26,7 @@ export default class cluster extends React.Component {
     }
     componentDidMount() {
         if (connS.connected == true) {
-            this.setState({ login: 'Login ' + connS.connSettings.host + ' as ' + connS.connSettings.username, display: 'block' ,refresh: this.staet.refresh + 1})
+            this.setState({ login: 'Login ' + connS.connSettings.host + ' as ' + connS.connSettings.username, display: 'block', refresh: this.state.refresh + 1 })
             console.log(connS.connSettings.host)
         }
     }
@@ -38,31 +38,17 @@ export default class cluster extends React.Component {
     }
     showSetQ() {
         var that = this
-        let conn = new Client()
-        var dataT = ''
-        var body
-        conn.on('ready', function () {
-            // console.log('Client :: ready');
-            conn.shell(function (err, stream) {
-                if (err) throw err;
-                stream.on('close', function () {
-                    console.log(dataT);
-                    conn.end();
-                    body = dataT.split("$ qmgr")
-                    body = body[1].split("$ exit")
-                    body = body[0].substring(body[0].indexOf('\r\n') + 2, body[0].lastIndexOf('\r\n'))
-                    em.emit('viewQSinfoChange', "Queue configuration", body)
-
-                }).on('data', function (data) {
-                    dataT += data
-                }).stderr.on('data', function (data) {
-                    console.log('STDERR: ' + data);
-                });
-                stream.end("qmgr -c 'p s'\nexit\n");
-            });
-        }).connect(connS.connSettings);
+        ++comNum
+        em.emit('newCommand', "qmgr -c 'p s'")
+        em.once('reply' + (comNum - 1), (data) => {
+            // console.log(data)
+            let body = data.split("mgr -c")
+            body = body[1].split("$")
+            body = body[0].substring(body[0].indexOf('\r\n') + 2, body[0].lastIndexOf('\r\n'))
+            em.emit('viewQSinfoChange', "Queue configuration", body)
+        })
     }
-    newQ(){
+    newQ() {
         em.emit('showmanbar', 'create queue ', 1)
     }
 
@@ -77,8 +63,8 @@ export default class cluster extends React.Component {
                 <h2 className="sub-header">Node list</h2>
                 <NodeInfoTable />
                 {/*<button className="btn btn-primary btn-sm navbar-right" data-toggle='modal' data-target='#login-modal'>Connect to cluster</button>*/}
-                <button id='qConfBtn' className="btn btn-default btn-sm navbar-right" onClick={this.showSetQ.bind(this)} style={{display: this.state.display}}>View queue configuration</button>
-                <button id='qConfBtn1' className="btn btn-default btn-sm navbar-right" onClick={this.newQ.bind(this)} style={{display: this.state.display}}>create new queue</button>
+                <button id='qConfBtn' className="btn btn-default btn-sm navbar-right" onClick={this.showSetQ.bind(this)} style={{ display: this.state.display }}>View queue configuration</button>
+                <button id='qConfBtn1' className="btn btn-default btn-sm navbar-right" onClick={this.newQ.bind(this)} style={{ display: this.state.display }}>create new queue</button>
                 <h2 className="sub-header" >Queue list</h2>
                 <QueueInfo />
                 <RightClickMenu />

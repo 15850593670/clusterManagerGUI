@@ -8,6 +8,7 @@ export default class NodeInfoTable extends React.Component {
 
         this.state = {
             connected: false,
+            keys: ["Node Name"],
             nodeList: []
         }
         em.on('connectionEstablished', function () {
@@ -24,48 +25,36 @@ export default class NodeInfoTable extends React.Component {
     }
     refresh() {
         var that = this
-        let dataT = ''
-        let conn = new Client()
-        conn.on('ready', function () {
-            console.log('Client :: ready');
-            conn.shell(function (err, stream) {
-                if (err) throw err;
-                stream.on('close', function () {
-                    console.log(dataT);
-                    conn.end();
-
-                    dataT = dataT.split("$ pbsnodes\r\n")
-                    dataT = dataT[1].split("\r\n\r\n")
-                    // console.log(dataT)
-                    let dataX = []
-                    for (let j = 0; j < dataT.length - 1; j++) {
-                        let temp = dataT[j]
-                        temp = temp.split('\r\n')
-                        // console.log(temp)
-                        let dataY = []
-                        dataY.push(["Node Name"].concat(temp[0]))
-                        for (var i = 1; i < temp.length; i++) {
-                            dataY.push(temp[i].split(" = "))
-                        }
-                        if(dataY[1][1].trim() != 'free' && dataY.length == 7){
-                            dataY.splice(5, 0, ["status", "--"])
-                            console.log('insert')
-                        }
-                        dataX.push(dataY)
+        ++comNum
+        em.emit('newCommand', 'pbsnodes')
+        em.once('reply' + (comNum - 1), (data) => {
+            console.log(data)
+            let dataT = data.split("bsnodes\r\n")
+            dataT = dataT[1].split("\r\n\r\n")
+            // console.log(dataT)
+            let dataX = []
+            for (let j = 0; j < dataT.length - 1; j++) {
+                let temp = dataT[j]
+                temp = temp.split('\r\n')
+                // console.log(temp)
+                let dataY = []
+                var tempsplice
+                dataY.push(["Node Name"].concat(temp[0]))
+                for (var i = 1; i < temp.length; i++) {
+                    tempsplice = temp[i].split(" = ")
+                    if (that.state.keys.indexOf(tempsplice[0]) == -1) {
+                        that.state.keys.push(tempsplice[0])
                     }
-                    // console.log(dataT)
-                    // console.log(dataX)
-                    // if (that.refs.nodeList) {
-                        that.setState({ nodeList: dataX, connected: true })
-                    // }
-                }).on('data', function (data) {
-                    dataT += data
-                }).stderr.on('data', function (data) {
-                    console.log('STDERR: ' + data);
-                });
-                stream.end('pbsnodes\nexit\n');
-            });
-        }).connect(connS.connSettings);
+                    dataY.push(tempsplice)
+                }
+                // if (dataY[1][1].trim() != 'free' && dataY.length == 7) {
+                //     dataY.splice(5, 0, ["status", "--"])
+                //     console.log('insert')
+                // }
+                dataX.push(dataY)
+            }
+            that.setState({ nodeList: dataX, connected: true })
+        })
     }
 
 
@@ -77,21 +66,28 @@ export default class NodeInfoTable extends React.Component {
                 </div>
             )
         }
-        var NodeHeads = this.state.nodeList[0].map((node, i) => {
+        var NodeHeads = this.state.keys.map((node, i) => {
             return (
-                <th key={i}>{node[0].trim()}</th>
+                <th key={i}>{node.trim()}</th>
             );
         });
         var NodeValue = this.state.nodeList.map((node, i) => {
-            let oneNode = node.map((attr, j) => {
-                if (attr[1].trim().length > 10) {
-                    return (
-                        <td key={j} data-toggle="tooltip" data-placement="top" title={attr[1].trim()}>{attr[1].trim().substring(0, 10)}</td>
-                    )
+            let oneNode = this.state.keys.map((attr, j) => {
+                for (var xx = 0; xx < node.length; xx++) {
+                    // console.log(node[xx][0] , node)
+
+                    if (node[xx][0] == attr) {
+                        if (node[xx][1].trim().length > 10) {
+                            return (
+                                <td key={j} data-toggle="tooltip" data-placement="top" title={node[xx][1].trim()}>{node[xx][1].trim().substring(0, 10)}</td>
+                            )
+                        }
+                        return (
+                            <td key={j}>{node[xx][1].trim()}</td>
+                        )
+                    }
                 }
-                return (
-                    <td key={j}>{attr[1].trim()}</td>
-                )
+                return (<td key={j}> -- </td>)
             })
             return (
                 <tr key={i}>{oneNode}</tr>

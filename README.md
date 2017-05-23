@@ -13,7 +13,7 @@ clone 源代码后 在终端工程目录下执行
 
 npm install
 
-npm runwatch
+npm run watch
 
 打开一个新的终端
 

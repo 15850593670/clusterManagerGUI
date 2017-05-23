@@ -1,7 +1,7 @@
 'use strict'
 
 import React from 'react'
-var {dialog} = require('electron').remote // Load remote compnent that contains the dialog dependency
+var { dialog } = require('electron').remote // Load remote compnent that contains the dialog dependency
 //var dialog = remote.require('dialog') // Load the dialogs component of the OS
 var fs = require('fs')
 
@@ -16,7 +16,7 @@ export default class NewJob extends React.Component {
     }
     cancelClick(e) {
         $('#newjob-modal').modal('hide')
-        
+
     }
     subjob(e) {
         var conn = new Client();
@@ -25,12 +25,10 @@ export default class NewJob extends React.Component {
             conn.sftp(function (err, sftp) {
                 if (err) throw err;
 
-                //var fs = require("fs"); // Use node filesystem
-                
                 var readStream = fs.createReadStream(that.state.filename)
-                var wstr = that.state.filename.substring(that.state.filename.lastIndexOf('\/')+1) + '_'+ Date.now().toString()
+                var wstr = that.state.filename.substring(that.state.filename.lastIndexOf('\/') + 1) + '_' + Date.now().toString()
                 that.state.subfilename = wstr
-                console.log(that.state.subfilename+' ' + wstr)
+                console.log(that.state.subfilename + ' ' + wstr)
                 var writeStream = sftp.createWriteStream(wstr)
 
                 writeStream.on('close', function () {
@@ -49,25 +47,12 @@ export default class NewJob extends React.Component {
         }).connect(connS.connSettings);
     }
     startJob() {
-        let conn = new Client()
         var that = this
-        let dataT = ''
-        conn.on('ready', function () {
-            console.log('Client :: ready');
-            conn.shell(function (err, stream) {
-                if (err) throw err;
-                stream.on('close', function () {
-                    console.log(dataT);
-                    conn.end();
-                    console.log("job" + that.state.filename + 'submitted.')
-                }).on('data', function (data) {
-                    dataT += data
-                }).stderr.on('data', function (data) {
-                    console.log('STDERR: ' + data);
-                });
-                stream.end('qsub ' + that.state.subfilename + '\nexit\n');
-            });
-        }).connect(connS.connSettings);
+        ++comNum
+        em.emit('newCommand', 'qsub ' + that.state.subfilename)
+        em.once('reply' + (comNum - 1), (data) => {
+            console.log("job" + that.state.filename + 'submitted.')
+        })
     }
 
     fileChange(e) {
@@ -83,9 +68,6 @@ export default class NewJob extends React.Component {
             this.state.filename = mp[0]
         }
     }
-    // <!--<label className='btn btn-default btn-file' onClick={this.fileChoose}>
-    //                             browser<input type='file' style={{ display: "none" }} />
-    //                         </label>
 
     render() {
         return (

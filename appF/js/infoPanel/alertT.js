@@ -28,11 +28,11 @@ export default class alertT extends React.Component {
         })
     }
     display() {
-        $(".alert").fadeIn(0, () => {
-            $('.alert').css('display', 'block')
+        $(".alert1").fadeIn(0, () => {
+            $('.alert1').css('display', 'block')
             window.setTimeout(function () {
-                $(".alert").fadeOut(1000)
-            }, 2000);
+                $(".alert1").fadeOut(1000)
+            }, 3000);
         })
 
     }
@@ -40,15 +40,15 @@ export default class alertT extends React.Component {
     render() {
         if (this.state.p == 1) {
             return (
-                <div className="alert" style={{ display: 'none' }}>
-                    <div className="msg msg-success msg-success-text alert"> <span className="glyphicon glyphicon glyphicon-ok"></span> Succeed!! {this.state.text}</div>
+                <div className="alert1" style={{ display: 'none' }}>
+                    <div className="msg msg-success msg-success-text alert1"> <span className="glyphicon glyphicon glyphicon-ok"></span> Succeed!! {this.state.text}</div>
                 </div>
 
             )
         } else {
             return (
-                <div className="alert" style={{ display: 'none' }}>
-                    <div className="msg msg-warning msg-danger-text alert"> <span className="glyphicon glyphicon-exclamation-sign"></span> Fail!! {this.state.text}</div>
+                <div className="alert1" style={{ display: 'none' }}>
+                    <div className="msg msg-warning msg-danger-text alert1"> <span className="glyphicon glyphicon-exclamation-sign"></span> Fail!! {this.state.text}</div>
                 </div>
             )
         }

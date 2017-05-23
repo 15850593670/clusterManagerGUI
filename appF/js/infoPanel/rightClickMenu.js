@@ -25,59 +25,29 @@ export default class rightClickMenu extends React.Component {
         })
         $('#viewQattr').click(() => {
             var that = this
-            let conn = new Client()
-            var dataT = ''
-            var body
-            conn.on('ready', function () {
-                // console.log('Client :: ready');
-                conn.shell(function (err, stream) {
-                    if (err) throw err;
-                    stream.on('close', function () {
-                        console.log(dataT);
-                        conn.end();
-                        body = dataT.split("$ qstat")
-                        body = body[1].split("$ exit")
-                        body = body[0].substring(body[0].indexOf('\r\n') + 2, body[0].lastIndexOf('\r\n'))
-                        em.emit('viewQSinfoChange', that.state.queue, body)
-
-                    }).on('data', function (data) {
-                        dataT += data
-                    }).stderr.on('data', function (data) {
-                        console.log('STDERR: ' + data);
-                    });
-                    stream.end("qstat -f -Q " + that.state.queue + "\nexit\n");
-                });
-            }).connect(connS.connSettings);
+            ++comNum
+            em.emit('newCommand', "qstat -f -Q " + that.state.queue)
+            em.once('reply' + (comNum - 1), (data) => {
+                let body = data.split("stat -f")
+                body = body[1].split("$")
+                body = body[0].substring(body[0].indexOf('\r\n') + 2, body[0].lastIndexOf('\r\n'))
+                em.emit('viewQSinfoChange', that.state.queue, body)
+            })
         })
         $('#deleteQ').click(() => {
             var that = this
-            let conn = new Client()
-            var dataT = ''
-            var body
-            conn.on('ready', function () {
-                // console.log('Client :: ready');
-                conn.shell(function (err, stream) {
-                    if (err) throw err;
-                    stream.on('close', function () {
-                        console.log(dataT);
-                        conn.end();
-                        body = dataT.split("$ qmgr -c")
-                        body = body[1].split("$ exit")
-                        body = body[0].split('\r\n')
-                        // console.log(body.length)
-                        if (body.length == 2) {
-                            em.emit('alertInfo', 1, 'delete queue ' + that.state.queue + 'succeed!')
-                            em.emit('connectionEstablished')
-                        }
-
-                    }).on('data', function (data) {
-                        dataT += data
-                    }).stderr.on('data', function (data) {
-                        console.log('STDERR: ' + data);
-                    });
-                    stream.end("qmgr -c 'delete queue " + that.state.queue + "'\nexit\n");
-                });
-            }).connect(connS.connSettings);
+            ++comNum
+            em.emit('newCommand', "qmgr -c 'delete queue " + that.state.queue + "'")
+            em.once('reply' + (comNum - 1), (data) => {
+                let body = data.split("mgr -c")
+                body = body[1].split("$")
+                body = body[0].split('\r\n')
+                // console.log(body.length)
+                if (body.length == 2) {
+                    em.emit('alertInfo', 1, 'delete queue ' + that.state.queue + 'succeed!')
+                    em.emit('connectionEstablished')
+                }
+            })
         })
 
     }

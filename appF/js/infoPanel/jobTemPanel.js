@@ -34,9 +34,6 @@ export default class jobTemPanel extends React.Component {
         this.setState({ code: true })
         console.log('new job')
     }
-    newTemJob(){
-
-    }
 
     openthefile(f) {
         this.state.file = f
@@ -71,25 +68,12 @@ export default class jobTemPanel extends React.Component {
         }).connect(connS.connSettings);
     }
     startJob(f) {
-        let conn = new Client()
         var that = this
-        let dataT = ''
-        conn.on('ready', function () {
-            console.log('Client :: ready');
-            conn.shell(function (err, stream) {
-                if (err) throw err;
-                stream.on('close', function () {
-                    console.log(dataT);
-                    conn.end();
-                    console.log("job" + f.filename + 'submitted.')
-                }).on('data', function (data) {
-                    dataT += data
-                }).stderr.on('data', function (data) {
-                    console.log('STDERR: ' + data);
-                });
-                stream.end('qsub ' + that.state.jobfile + '\nexit\n');
-            });
-        }).connect(connS.connSettings);
+        ++comNum
+        em.emit('newCommand', 'qsub ' + that.state.jobfile)
+        em.once('reply' + (comNum - 1), (data) => {
+            console.log("job" + f.filename + 'submitted.')
+        })
     }
 
     render() {
