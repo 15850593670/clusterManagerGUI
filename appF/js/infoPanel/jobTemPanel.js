@@ -41,31 +41,14 @@ export default class jobTemPanel extends React.Component {
     }
 
     subjob(f) {
-        var conn = new Client();
+        var localfile = f.fullname
+        var uploadfile = f.filename
+        this.state.jobfile = f.filename
         var that = this
-        conn.on('ready', function () {
-            conn.sftp(function (err, sftp) {
-                if (err) throw err;
-
-                var readStream = fs.createReadStream(f.fullname)
-                var wstr = f.filename //+ '_' + Date.now().toString()
-                var writeStream = sftp.createWriteStream(wstr)
-                that.state.jobfile = wstr
-
-                writeStream.on('close', function () {
-                    console.log("- file transferred succesfully");
-                    that.startJob(f)
-                });
-
-                writeStream.on('end', function () {
-                    console.log("sftp connection closed");
-                    conn.close();
-                });
-
-                // initiate transfer of file
-                readStream.pipe(writeStream);
-            });
-        }).connect(connS.connSettings);
+        em.emit('uploadfile', localfile, uploadfile, fileupnum)
+        em.once('fileuploaded' + fileupnum++, () => {
+            that.startJob(f)
+        })
     }
     startJob(f) {
         var that = this
@@ -80,7 +63,7 @@ export default class jobTemPanel extends React.Component {
         if (this.state.code == true) {
             return (
                 <div id='jobInfoPanel' className='container' style={{ width: "100%", height: "100%" }}>
-                    <CodePanel file={this.state.file} subjob={this.subjob.bind(this)}/>
+                    <CodePanel file={this.state.file} subjob={this.subjob.bind(this)} />
                 </div>
             )
         }
@@ -104,7 +87,7 @@ export default class jobTemPanel extends React.Component {
                 </h1>
                 <RecentJob openfile={this.openthefile.bind(this)} />
                 <Openfile openIt={this.openthefile.bind(this)} />
-                <NewTemJob openfile={this.openthefile.bind(this)}/>
+                <NewTemJob openfile={this.openthefile.bind(this)} />
 
             </div>
         )

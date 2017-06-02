@@ -4,7 +4,7 @@ import React from 'react'
 
 var { dialog } = require('electron').remote
 var fs = require('fs')
-import Conf from '../common/conf'
+// import Conf from '../common/conf'
 
 export default class submitfiles extends React.Component {
     constructor(props) {

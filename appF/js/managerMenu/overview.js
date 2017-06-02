@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-export default class clusterButton extends React.Component {
+export default class overview extends React.Component {
     constructor(props) {
         super(props)
 
@@ -25,7 +25,8 @@ export default class clusterButton extends React.Component {
     }
     render() {
         return (
-            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">Cluster Status</a></li>
+            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">
+                <span className="glyphicon glyphicon-dashboard" aria-hidden="true"></span> &nbsp; Overview</a></li>
         )
     }
 }

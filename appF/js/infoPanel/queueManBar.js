@@ -4,12 +4,12 @@ import React from 'react'
 
 import './less/queueManBar.less'
 
-export default class cluster extends React.Component {
+export default class queueManBar extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             queue: '',
-            show: false,
+            show: true,
             attrtext: '',
             setq: 0,
             setqplaceholder: ["Input attribute value.(eg. started = True)", "Input new queue name."]
@@ -62,7 +62,7 @@ export default class cluster extends React.Component {
     render() {
         return (
 
-            <div className="row" id='queuemanbar' style={{ display: 'none' }}>
+            <div className="row" id='queuemanbar' >
                 <div className="input-group">
                     <span className="input-group-addon" >{this.state.queue}</span>
                     <input id='textIn' type="text" className="form-control" placeholder={this.state.setqplaceholder[this.state.setq]} onChange={this.handleTextChange.bind(this)}></input>

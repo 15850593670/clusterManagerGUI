@@ -7,14 +7,18 @@
   </head>
   <body>
     <div id="app"></div>
+    <!--<script src="./bootstrap/echarts.min.js"></script>-->
     <script>const em = require('./js/event').event;</script>
     <script>const connS = require('./js/connection').connS; const Client = connS.Client;</script>
-    <script>var commandQueue = []; var comNum = 1; var replyNum = 1;</script>
+    <script>const Conf = require('./js/common/conf').Conf;</script>
+    <script>var commandQueue = []; var comNum = 1; var replyNum = 1; var fileupnum = 1;</script>
     <!--<script src="./bootstrap/jquery-3.1.1.js"></script>-->
     <script>window.$ = window.jQuery = require('./bootstrap/jquery-3.1.1');</script>
     <script src="./bootstrap/bootstrap.min.js"></script>
     <script src="./bootstrap/bootstrap-contextmenu.js"></script>
     <script src="./bootstrap/prettify.js"></script>
+    <!--<script>window.echarts = require('./bootstrap/echarts.min');</script>-->
+    <!--<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>-->
   </body>
   <script src="http://localhost:8080/webpack-dev-server.js"> </script>
   <script src="http://localhost:8080/build/bui.js"></script>

@@ -1,6 +1,7 @@
 'use strict'
 
 import React from 'react'
+// import Conf from './../common/conf'
 
 export default class JobInfoTable extends React.Component {
     constructor(props) {
@@ -8,8 +9,8 @@ export default class JobInfoTable extends React.Component {
 
         this.state = {
             connected: false,
-            titleList: null,
-            jobList: null,
+            titleList: [],
+            jobList: [],
             queuePos: 0,
             queueList: [],
             queue2show: 'all',
@@ -29,44 +30,22 @@ export default class JobInfoTable extends React.Component {
         ++comNum
         em.emit('newCommand', 'qstat')
         em.once('reply' + (comNum - 1), (data) => {
-            console.log(data)
-            let dataT = '2345666' + data
-            dataT = dataT.split("666qstat")
-            dataT = dataT[1].split("\r\n")
-
-            if (dataT.length < 3) {
+            let data2 = data.split('\r\n')
+            if (data2.length == 2) {
                 return
             }
-            let dataTitle = []
-            let dataJob = []
-            let dataX = dataT[1].split(/ +(?!(ID|Use))/)
-            for (var i = 0; i < dataX.length; i += 2) {
-                dataTitle.push(dataX[i])
-                if (dataX[i].trim() == "Queue") {
-                    that.state.queuePos = i / 2
+            let ret = Conf.splitData(data2.slice(1, data2.length - 1))
+            that.state.queuePos = ret.titlelist.indexOf('Queue')
+            that.state.statusPos = ret.titlelist.indexOf('S')
+            for (var i = 0; i < ret.attrlist.length; i++) {
+                if (that.state.queueList.indexOf(ret.attrlist[i][that.state.queuePos]) == -1) {
+                    that.state.queueList.push(ret.attrlist[i][that.state.queuePos])
                 }
-                if (dataX[i].trim() == 'S') {
-                    that.state.statusPos = i / 2
-                }
-            }
-
-            for (let j = 3; j < dataT.length - 1; j++) {
-                let temp = dataT[j]
-                let dataY = []
-                temp = temp.split(/ +/)
-                console.log(temp)
-                for (var k = 0; k < temp.length - 1; k++) {
-                    dataY.push(temp[k])
-                }
-                dataJob.push(dataY)
-                // console.log(that.state.queuePos+' '+ dataY[that.state.queuePos])
-                if (that.state.queueList.indexOf(dataY[that.state.queuePos]) == -1) {
-                    that.state.queueList.push(dataY[that.state.queuePos])
-                } else if (that.state.statusList.indexOf(dataY[that.state.statusPos]) == -1) {
-                    that.state.statusList.push(dataY[that.state.statusPos])
+                if (that.state.statusList.indexOf(ret.attrlist[i][that.state.statusPos]) == -1) {
+                    that.state.statusList.push(ret.attrlist[i][that.state.statusPos])
                 }
             }
-            that.setState({ titleList: dataTitle, connected: true, jobList: dataJob })
+            that.setState({ titleList: ret.titlelist, jobList: ret.attrlist, connected: true })
         })
     }
     jobDetail(id) {
@@ -77,6 +56,21 @@ export default class JobInfoTable extends React.Component {
             this.setState({ queue2show: name })
         } else {
             this.setState({ status2show: name })
+        }
+    }
+    filterJobs(e) {
+        var input, filter, a, i
+        // input = $("#myInput")
+        filter = e.target.value.toUpperCase();
+        var div = $("#myDropdown");
+        // console.log(div[0].children[1].children )
+        a = div[0].children
+        for (i = 1; i < a.length; i++) {
+            if (a[i].children[0].text.toUpperCase().indexOf(filter) > -1) {
+                a[i].style.display = "";
+            } else {
+                a[i].style.display = "none";
+            }
         }
     }
 
@@ -147,17 +141,31 @@ export default class JobInfoTable extends React.Component {
             )
         })
         return (
-            <div className="table-responsive" style={{ height: "100%" }}>
-                <table className="table table-striped" style={{ height: "100%" }}>
-                    <thead>
-                        <tr>
-                            {JobHeads}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {JobValue}
-                    </tbody>
-                </table>
+            <div>
+                <div className="input-group">
+                    {/*<span className="input-group-btn">
+                        <button className="btn btn-default" type="button">Go!</button>
+                    </span>*/}
+                    <input type="text" className="form-control" placeholder="Search for..." onChange={this.filterJobs.bind(this)} ></input>
+                    <span className="input-group-btn">
+                        <button className="btn btn-default " type="button">
+                            <span className="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                        </button>
+                    </span>
+                </div>
+                {/*<input type="text" placeholder="Search.." id="myInput" onChange={this.filterFunction.bind(this)} ></input>*/}
+                <div className="table-responsive" style={{ height: "100%" }}>
+                    <table className="table table-striped" style={{ height: "100%" }}>
+                        <thead>
+                            <tr>
+                                {JobHeads}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {JobValue}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         )
     }

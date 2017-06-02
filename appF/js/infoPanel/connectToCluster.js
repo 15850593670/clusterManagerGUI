@@ -45,7 +45,7 @@ export default class ConnectToCluster extends React.Component {
     }
     connectClick() {
         var that = this
-        console.log(this.state)
+        // console.log(this.state)
         let conn = new Client()
         //
         if (this.state.clusterIP == null && this.state.cluserPort == null && this.state.username == null && this.state.password == null) {

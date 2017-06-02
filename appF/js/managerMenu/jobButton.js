@@ -11,7 +11,7 @@ export default class jobButton extends React.Component {
         }
 
         em.on('activechange', (v) => {
-            if (v != 2) {
+            if (v != 4) {
                 this.setState({ active: 'false' })
             }
         })
@@ -21,12 +21,13 @@ export default class jobButton extends React.Component {
         //$("li").removeClass("active");
 
         this.setState({ active: 'active' });
-        em.emit('activechange', 2)
-        em.emit('infoChange', 2)
+        em.emit('activechange', 4)
+        em.emit('infoChange', 4)
     }
     render() {
         return (
-            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">Job List</a></li>
+            <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">
+                <span className="glyphicon glyphicon-tasks" aria-hidden="true"></span>  &nbsp; Jobs</a></li>
         )
     }
 }

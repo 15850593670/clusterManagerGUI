@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-export default class jobTemplate extends React.Component {
+export default class queueButton extends React.Component {
     constructor(props) {
         super(props)
 
@@ -11,23 +11,21 @@ export default class jobTemplate extends React.Component {
         }
 
         em.on('activechange', (v) => {
-            if (v != 5) {
+            if (v != 3) {
                 this.setState({ active: 'false' })
             }
         })
     }
 
     sendm() {
-        //$("li").removeClass("active");
-
         this.setState({ active: 'active' });
-        em.emit('activechange', 5)
-        em.emit('infoChange', 5)
+        em.emit('activechange', 3)
+        em.emit('infoChange', 3)
     }
     render() {
         return (
             <li className={this.state.active} onClick={this.sendm.bind(this)}><a href="#">
-                <span className="glyphicon glyphicon-pencil" aria-hidden="true"></span>   &nbsp; Edit job</a></li>
+                <span className="glyphicon glyphicon-stats" aria-hidden="true"></span> &nbsp; Queue</a></li>
         )
     }
 }

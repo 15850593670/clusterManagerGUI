@@ -1,62 +1,37 @@
 'use strict'
 
 import React from 'react'
-var { dialog } = require('electron').remote
-var fs = require('fs')
 
-export default class submitfiles extends React.Component {
+export default class submitUsePar extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            filename: null,
-            topath: null
+            filename: '',
+            par: '',
+            topath: ''
         }
     }
     cancelClick(e) {
-        $('#submitfiles-modal').modal('hide')
+        $('#submitUsePar-modal').modal('hide')
 
     }
     subfile(e) {
-        var that = this
-        var wstr = ''
-        if (this.state.topath == null) {
-            wstr = that.state.filename.substring(that.state.filename.lastIndexOf('\/') + 1)
-        } else {
-            wstr = that.state.topath
-        }
-        em.emit('uploadfile', that.state.filename, wstr, fileupnum)
-        em.once('fileuploaded' + fileupnum++, () => {
-            $('#submitfiles-modal').modal('hide')
-        })
+
     }
 
-
-    fileChange(e) {
-        $('#upload-file-info').html($('#my-file-selector').val())
-    }
-    fileChoose(e) {
-        e.preventDefault()
-        const mp = dialog.showOpenDialog({
-            properties: ['openFile']
-        })
-        if (mp) {
-            $('#upload-file-info').html(mp)
-            this.state.filename = mp[0]
-        }
-    }
-    handlePathChange(e) {
-        this.setState({ topath: e.target.value })
+    handleParChange(e) {
+        this.setState({ par: e.target.value })
     }
 
     render() {
         return (
-            <div className="modal fade" id='submitfiles-modal' tabIndex='-1' >
+            <div className="modal fade" id='submitUsePar-modal' tabIndex='-1' >
                 <div className="modal-dialog modal-lg">
                     <div className="modal-content">
                         <div className="modal-header">
                             <button className="close" onClick={this.cancelClick.bind(this)}>&times;</button>
-                            <h4>Upload file</h4>
+                            <h4>submit job</h4>
                         </div>
                         <div className="modal-body">
 

@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import Conf from '../common/conf'
+// import Conf from '../common/conf'
 import './less/recentjob.less'
 
 export default class recentJob extends React.Component {

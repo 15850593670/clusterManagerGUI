@@ -1,6 +1,7 @@
 'use strict'
 
 import React from 'react'
+// import Conf from './../common/conf'
 
 export default class NodeInfoTable extends React.Component {
     constructor(props) {
@@ -9,13 +10,15 @@ export default class NodeInfoTable extends React.Component {
         this.state = {
             connected: false,
             keys: ["Node Name"],
-            nodeList: []
+            nodeList: [],
+            // getnodes: false
         }
         em.on('connectionEstablished', function () {
 
             console.log('receive 1')
             this.refresh()
         }.bind(this))
+
     }
     componentDidMount() {
         if (connS.connected == true) {
@@ -31,29 +34,10 @@ export default class NodeInfoTable extends React.Component {
             console.log(data)
             let dataT = data.split("bsnodes\r\n")
             dataT = dataT[1].split("\r\n\r\n")
-            // console.log(dataT)
-            let dataX = []
-            for (let j = 0; j < dataT.length - 1; j++) {
-                let temp = dataT[j]
-                temp = temp.split('\r\n')
-                // console.log(temp)
-                let dataY = []
-                var tempsplice
-                dataY.push(["Node Name"].concat(temp[0]))
-                for (var i = 1; i < temp.length; i++) {
-                    tempsplice = temp[i].split(" = ")
-                    if (that.state.keys.indexOf(tempsplice[0]) == -1) {
-                        that.state.keys.push(tempsplice[0])
-                    }
-                    dataY.push(tempsplice)
-                }
-                // if (dataY[1][1].trim() != 'free' && dataY.length == 7) {
-                //     dataY.splice(5, 0, ["status", "--"])
-                //     console.log('insert')
-                // }
-                dataX.push(dataY)
-            }
-            that.setState({ nodeList: dataX, connected: true })
+            let ret = Conf.splitData(dataT.slice(0, dataT.length - 1), 2)
+            // console.log(ret)
+
+            that.setState({ nodeList: ret.attrlist, keys: ret.titlelist, connected: true })
         })
     }
 
@@ -72,22 +56,17 @@ export default class NodeInfoTable extends React.Component {
             );
         });
         var NodeValue = this.state.nodeList.map((node, i) => {
-            let oneNode = this.state.keys.map((attr, j) => {
-                for (var xx = 0; xx < node.length; xx++) {
-                    // console.log(node[xx][0] , node)
+            let oneNode = node.map((attr, j) => {
 
-                    if (node[xx][0] == attr) {
-                        if (node[xx][1].trim().length > 10) {
-                            return (
-                                <td key={j} data-toggle="tooltip" data-placement="top" title={node[xx][1].trim()}>{node[xx][1].trim().substring(0, 10)}</td>
-                            )
-                        }
-                        return (
-                            <td key={j}>{node[xx][1].trim()}</td>
-                        )
-                    }
+                if (attr.trim().length > 10) {
+                    return (
+                        <td key={j} data-toggle="tooltip" data-placement="top" title={attr.trim()}>{attr.trim().substring(0, 10)}</td>
+                    )
                 }
-                return (<td key={j}> -- </td>)
+                return (
+                    <td key={j}>{attr.trim()}</td>
+                )
+
             })
             return (
                 <tr key={i}>{oneNode}</tr>

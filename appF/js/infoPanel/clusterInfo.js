@@ -5,7 +5,7 @@ import React from 'react'
 import ConnectToCluster from './connectToCluster'
 import NodeInfoTable from './nodeInfoTable'
 import QueueInfo from './queueInfo'
-import QueueManBar from './queueManBar'
+// import QueueManBar from './queueManBar'
 import RightClickMenu from './rightClickMenu'
 import ViewQSinfo from './viewQSinfo'
 import AlertT from './alertT'
@@ -55,22 +55,22 @@ export default class cluster extends React.Component {
     render() {
         return (
             <div id='clusterInfoPanel' className='container'>
-                <button className="btn btn-primary btn-sm navbar-right" data-toggle='modal' data-target='#login-modal'>Connect to cluster</button>
-                <h1 className='page-header'>
+                {/*<button className="btn btn-primary btn-sm navbar-right" data-toggle='modal' data-target='#login-modal'>Connect to cluster</button>*/}
+                {/*<h1 className='page-header'>
                     cluster information
                 </h1>
-                <div id='w23'> {this.state.login} </div>
+                <div id='w23'> {this.state.login} </div>*/}
                 <h2 className="sub-header">Node list</h2>
                 <NodeInfoTable />
                 {/*<button className="btn btn-primary btn-sm navbar-right" data-toggle='modal' data-target='#login-modal'>Connect to cluster</button>*/}
-                <button id='qConfBtn' className="btn btn-default btn-sm navbar-right" onClick={this.showSetQ.bind(this)} style={{ display: this.state.display }}>View queue configuration</button>
+                {/*<button id='qConfBtn' className="btn btn-default btn-sm navbar-right" onClick={this.showSetQ.bind(this)} style={{ display: this.state.display }}>View queue configuration</button>
                 <button id='qConfBtn1' className="btn btn-default btn-sm navbar-right" onClick={this.newQ.bind(this)} style={{ display: this.state.display }}>create new queue</button>
                 <h2 className="sub-header" >Queue list</h2>
                 <QueueInfo />
                 <RightClickMenu />
                 <QueueManBar />
-                <AlertT />
-                <ConnectToCluster />
+                <AlertT />*/}
+                {/*<ConnectToCluster />*/}
                 <ViewQSinfo />
             </div>
         )

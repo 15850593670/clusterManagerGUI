@@ -7,7 +7,7 @@ var fs = require('fs')
 import '../../../node_modules/codemirror/lib/codemirror.css'
 import './less/code.less'
 var { dialog } = require('electron').remote
-import Conf from '../common/conf'
+// import Conf from '../common/conf'
 
 
 export default class codePanel extends React.Component {

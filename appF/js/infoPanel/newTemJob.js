@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import Conf from '../common/conf'
+// import Conf from '../common/conf'
 import './less/newjobtem.less'
 
 export default class newTemJob extends React.Component {

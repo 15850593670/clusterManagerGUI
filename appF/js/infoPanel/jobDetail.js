@@ -34,61 +34,28 @@ export default class JobDetail extends React.Component {
     }
     getOutput() {
         var that = this
-        let conn = new Client()
-        conn.on('ready', function () {
-            console.log('Client :: ready');
-            conn.sftp(function (err, sftp) {
-                if (err) throw err;
-
-                var moveFrom = "./" + that.state.jobname + '.o' + that.state.jobID
-                console.log(moveFrom)
-                var moveTo = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/' + that.state.jobname + '.o' + that.state.jobID + '.' + that.state.fresh++
-                console.log(moveTo)
-
-                sftp.fastGet(moveFrom, moveTo, {}, function (downloadError) {
-                    if (downloadError) throw downloadError
-
-                    console.log("Succesfully downloaded")
-                    if (fs.existsSync(moveTo)) {
-                        var text = fs.readFileSync(moveTo, 'utf8')
-                        if (text == '' || text == null) {
-                            text = 'no output'
-                        }
-                        that.setState({ output: text })
-                    } else {
-                        console.log('job ' + that.state.jobname + ' did not finish!')
-                    }
-                });
-            });
-        }).connect(connS.connSettings);
+        var moveFrom = "./" + that.state.jobname + '.o' + that.state.jobID
+        var moveTo = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/' + that.state.jobname + '.o' + that.state.jobID + '.' + that.state.fresh++
+        em.emit('readfile', moveFrom, moveTo, fileupnum)
+        em.once('readfileend' + fileupnum++, (text) => {
+            if (text == '' || text == null) {
+                text = 'no output'
+            }
+            that.setState({ output: text })
+        })
     }
     getErrorLog() {
         var that = this
-        let conn = new Client()
-        conn.on('ready', function () {
-            console.log('Client :: ready');
-            conn.sftp(function (err, sftp) {
-                if (err) throw err;
+        var moveFrom = "./" + that.state.jobname + '.e' + that.state.jobID
+        var moveTo = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/' + that.state.jobname + '.e' + that.state.jobID + '.' + that.state.fresh++
+        em.emit('readfile', moveFrom, moveTo, fileupnum)
+        em.once('readfileend' + fileupnum++, (text) => {
+            if (text == '' || text == null) {
+                text = 'no error log'
+            }
+            that.setState({ errorlog: text })
+        })
 
-                var moveFrom = "./" + that.state.jobname + '.e' + that.state.jobID
-                var moveTo = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/' + that.state.jobname + '.e' + that.state.jobID + '.' + that.state.fresh++
-
-                sftp.fastGet(moveFrom, moveTo, {}, function (downloadError) {
-                    if (downloadError) throw downloadError
-
-                    console.log("Succesfully downloaded")
-                    if (fs.existsSync(moveTo)) {
-                        var text = fs.readFileSync(moveTo, 'utf8')
-                        if (text == '' || text == null) {
-                            text = 'no error log'
-                        }
-                        that.setState({ errorlog: text })
-                    } else {
-                        that.setState({ errorlog: "job still running" })
-                    }
-                });
-            });
-        }).connect(connS.connSettings);
     }
 
     exitJobDetail() {
